@@ -27,7 +27,6 @@ class ScaleController extends Controller
         ]);
         if($validator->fails()){
             $errors = $validator->errors();
-            Log::error('Creation of scale failed', ['scale'=> $errors]);
             return response()->json([
                 'error' => $errors
             ]);
@@ -38,7 +37,6 @@ class ScaleController extends Controller
         Scale::create($data);
 
         $newScale = $data['scale'];
-        Log::info('Scale created', ['scale'=> $data]);
         return response()->json(['message' => "Your scale was created! The said scale is $newScale"], 200);
     }
 
@@ -53,7 +51,6 @@ class ScaleController extends Controller
             ]);
             if($validator->fails()){
                 $errors = $validator->errors();
-                Log::error('Update of scale failed', ['scale'=> $errors]);
                 return response()->json([
                     'error' => $validator->errors()
                 ]);
@@ -63,13 +60,11 @@ class ScaleController extends Controller
         $scale->update($data);
 
         $newscale = $data['scale'];
-        Log::info('Scale created', ['scale'=> $data]);
         return response()->json(['message' => "Your scale was updated! The said scale is now $newscale"], 200);
     }
 
     public function destroy(Scale $scale){
         $scale->delete();
-        Log::info('Scale deleted', ['scale' => $scale]);
         return response()->json(['message' => "Delete is done!"], 200);
     }
 }

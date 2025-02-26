@@ -19,7 +19,7 @@ class GateCheckingMiddleware
         if(!Gate::allows($ability)) {
             return response()->json(['message' => 'access denied for non-admin'], 403);
         }
-
+        
         return $next($request);
     }
 }

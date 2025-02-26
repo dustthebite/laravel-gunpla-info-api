@@ -71,7 +71,6 @@ class ModelKitController extends Controller
             ]);
             if($validator->fails()){
                 $errors = $validator->errors();
-                Log::error("Creation of model kit failed", ['errors' => $errors]);
                 return response()->json([
                     'error' => $errors
                 ]);
@@ -80,7 +79,6 @@ class ModelKitController extends Controller
         $data = $validator->validated();
 
         ModelKit::create($data);
-        Log::info('Model kit created', ['model_kit'=> $data]);
         return response()->json(['message' => "Your model kit was created!"], 200);
     }
 
@@ -102,7 +100,6 @@ class ModelKitController extends Controller
         ]);
         if($validator->fails()){
             $errors = $validator->errors();
-            Log::error("Update of model kit failed", ['errors' => $errors]);
             return response()->json([
                 'error' => $errors
             ]);
@@ -110,20 +107,17 @@ class ModelKitController extends Controller
         $data = $validator->validated();
 
         if(empty($request->only(['name', 'height_centimeters', 'isPBandai','grade_id','scale_id', 'timeline_id', 'recommended_price_yen']))){
-            Log::error("Update of model kit failed", ['error' => 'At least one field must be provided for update']);
             return response()->json([
                 'error' => 'At least one field must be provided for update'
             ]);
         }
         
         $modelKit->update($data); 
-        Log::info('Model kit updated', ['updates'=> $data]);
         return response()->json(['message' => "Your model kit was updated!"], 200);
     }
 
     public function destroy(ModelKit $modelKit){
         $modelKit->delete();
-        Log::info('Model kit deleted', ['model_kit' => $modelKit]);
         return response()->json(['message' => "Delete is done!"], 200);
     }
 }

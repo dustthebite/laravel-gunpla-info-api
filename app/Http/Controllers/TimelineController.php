@@ -25,7 +25,6 @@ class TimelineController extends Controller
             ]);
             if($validator->fails()){
                 $errors = $validator->errors();
-                Log::error('Creation of timeline failed', ['timeline'=> $errors]);
                 return response()->json([
                     'error' => $validator->errors()
                 ]);
@@ -36,7 +35,6 @@ class TimelineController extends Controller
         Timeline::create($data);
 
         $newTimeline = $data['timeline'];
-        Log::info('Timeline created', ['timeline'=> $data]);
         return response()->json(['message' => "Your timeline was created! The said timeline is $newTimeline"], 200);
     }
 
@@ -51,7 +49,6 @@ class TimelineController extends Controller
             ]);
             if($validator->fails()){
                 $errors = $validator->errors();
-                Log::error('Update of timeline failed', ['timeline'=> $errors]);
                 return response()->json([
                     'error' => $errors
                 ]);
@@ -62,13 +59,11 @@ class TimelineController extends Controller
         $timeline->update($data);
 
         $newTimeline = $data['timeline'];
-        Log::info('Timeline updated', ['updates'=> $data]);
         return response()->json(['message' => "Your timeline was updated! The said timeline is now $newTimeline"], 200);
     }
 
     public function destroy(Timeline $timeline){
         $timeline->delete();
-        Log::info('Timeline deleted', ['timeline' => $timeline]);
         return response()->json(['message' => "Delete is done!"], 200);
     }
 

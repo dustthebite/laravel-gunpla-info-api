@@ -5,6 +5,7 @@ use App\Http\Controllers\ScaleController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\ModelKitController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,9 +30,12 @@ Route::apiResource('timelines', TimelineController::class)->except(['index', 'sh
 Route::apiResource('modelkits', ModelKitController::class)->only(['index','show']);
 Route::apiResource('modelkits', ModelKitController::class)->except(['index', 'show'])->middleware(['auth:api', 'gateChecking:manage-content']);
 
-//user
-Route::get('/user', function (Request  $request) {
+//authentication
+Route::get('/current_user', function (Request  $request) {
     return $request->user();
 })->middleware('auth:api');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+//user management
+Route::apiResource('users', UserController::class)->except(['store', 'update'])->middleware(['auth:api', 'gateChecking:manage-users']);

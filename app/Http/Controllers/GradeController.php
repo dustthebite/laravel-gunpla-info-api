@@ -25,7 +25,6 @@ class GradeController extends Controller
             ]);
             if($validator->fails()){
                 $errors = $validator->errors();
-                Log::error('Creation of grade failed', ['grade'=> $errors]);
                 return response()->json([
                     'error' => $errors 
                 ]);
@@ -37,7 +36,6 @@ class GradeController extends Controller
         Grade::create($data);
 
         $newGrade = $data['grade'];
-        Log::info('Grade created', ['grade'=> $data]);
         return response()->json(['message' => "Your grade was created! The said grade is $newGrade"], 200);
     }
 
@@ -52,7 +50,6 @@ class GradeController extends Controller
             ]);
             if($validator->fails()){
                 $errors = $validator->errors();
-                Log::error("Update of grade failed", ['errors' => $errors]);
                 return response()->json([
                     'error' => $validator->errors()
                 ]);
@@ -62,13 +59,11 @@ class GradeController extends Controller
         $grade->update($data);
 
         $newgrade = $data['grade'];
-        Log::info('Grade updated', ['updates'=> $data]);
         return response()->json(['message' => "Your grade was updated! The said grade is now $newgrade"], 200);
     }
 
     public function destroy(Grade $grade){
         $grade->delete();
-        Log::info('Grade deleted', ['grade' => $grade]);
         return response()->json(['message' => "Delete is done!"], 200);
     }
 }
