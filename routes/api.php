@@ -36,6 +36,8 @@ Route::get('/current_user', function (Request  $request) {
 })->middleware('auth:api');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/generate_reset_token', [AuthController::class, 'sendResetLink']);
+Route::post('/reset_password', [AuthController::class, 'resetPassword']);
 
 //user management
 Route::apiResource('users', UserController::class)->except(['store', 'update'])->middleware(['auth:api', 'gateChecking:manage-users']);
