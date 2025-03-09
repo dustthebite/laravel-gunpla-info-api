@@ -11,50 +11,26 @@ use Illuminate\Support\Facades\Validator;
 class ModelKitController extends Controller
 {
     public function index(Request $request){
-        $data = ModelKit::query();
+        $query = ModelKit::with(['timeline', 'grade', 'scale']);
 
-        if($request->has('isPBandai')){
-            $data->where('isPBandai', $request->query('isPBandai'));
-        }
-
-        if ($request->has('name')) {
-            $data->where('name', 'LIKE', '%' . $request->query('name') . '%');
-        }
-
-        if ($request->has('price')) {
-            $data->where('recommended_price_yen', $request->query('price'));
-        }
-
-        if ($request->has('price_min')) {
-            $data->where('recommended_price_yen', '>=', $request->query('price_min'));
-        }
-
-        if ($request->has('price_max')) {
-            $data->where('recommended_price_yen', '<=', $request->query('price_max'));
-        }
-
-        if ($request->has('release_date')) {
-            $data->whereDate('release_date', $request->query('release_date'));
-        }
-
-        if ($request->has('year')) {
-            $data->whereYear('release_date', $request->query('year'));
-        }
-
-        if ($request->query('sort') === 'newest') {
-            $data->orderBy('release_date', 'desc');
-        }
-
-        if ($request->query('sort') === 'oldest') {
-            $data->orderBy('release_date', 'asc');
-        }
-
-
+        $query->when($request->timeline_id, fn ($q, $value) => $q->where('timeline_id', $value));
+        $query->when($request->grade_id, fn ($q, $value) => $q->where('grade_id', $value));
+        $query->when($request->scale_id, fn ($q, $value) => $q->where('scale_id', $value));
+        $query->when($request->isPBandai, fn($q, $value) => $q->where('isPBandai', $value));
+        $query->when($request->name, fn($q, $value) => $q->where('name', 'LIKE', '%' . $value . '%'));
+        $query->when($request->price, fn($q, $value) => $q->where('recommended_price_yen', $value));
+        $query->when($request->price_min, fn($q, $value) => $q->where('recommended_price_yen', '>=', $value));
+        $query->when($request->price_max, fn($q, $value) => $q->where('recommended_price_yen', '<=', $value));
+        $query->when($request->release_date, fn($q, $value) => $q->whereDate('release_date', $value));
+        $query->when($request->year, fn($q, $value) => $q->whereYear('release_date', $value));
+        $query->when($request->sort === 'newest', fn($q) => $q->orderBy('release_date', 'desc'));
+        $query->when($request->sort === 'oldest', fn($q) => $q->orderBy('release_date', 'asc'));
+        
         if ($request->query('per_page') === 'all') {
-            return response()->json($data->get()); 
+            return response()->json($query->get()); 
         } else {
             $perPage = $request->query('per_page', 10); 
-            return response()->json($data->paginate($perPage));
+            return response()->json($query->paginate($perPage));
         }
     }
 
